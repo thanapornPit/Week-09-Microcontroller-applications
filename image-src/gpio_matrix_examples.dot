@@ -1,0 +1,93 @@
+digraph GPIO_Matrix_Examples {
+    // Graph settings
+    rankdir=TB;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=9];
+    edge [fontname="Arial", fontsize=8];
+    
+    // Title
+    label="GPIO Matrix: ตัวอย่างการ Route แบบยืดหยุ่น";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+    
+    // Example 1: Normal routing
+    subgraph cluster_ex1 {
+        label="Example 1: Normal Routing";
+        style=filled;
+        fillcolor="#E8F8F5";
+        fontsize=11;
+        fontname="Arial Bold";
+        
+        uart1_tx [label="UART1_TX", shape=box, style=filled, fillcolor="#FFE082"];
+        gpio1 [label="GPIO1", shape=circle, style=filled, fillcolor="#C8E6C9", width=0.8, height=0.8, fixedsize=true];
+        uart1_tx -> gpio1 [label="Direct", color="green"];
+    }
+    
+    // Example 2: Cross routing
+    subgraph cluster_ex2 {
+        label="Example 2: Cross Routing";
+        style=filled;
+        fillcolor="#FFF3E0";
+        fontsize=11;
+        fontname="Arial Bold";
+        
+        uart2_tx [label="UART2_TX", shape=box, style=filled, fillcolor="#FFE082"];
+        spi_clk [label="SPI_CLK", shape=box, style=filled, fillcolor="#FFE082"];
+        gpio2 [label="GPIO2", shape=circle, style=filled, fillcolor="#C8E6C9", width=0.8, height=0.8, fixedsize=true];
+        gpio3 [label="GPIO3", shape=circle, style=filled, fillcolor="#C8E6C9", width=0.8, height=0.8, fixedsize=true];
+        
+        uart2_tx -> gpio3 [label="Cross", color="orange"];
+        spi_clk -> gpio2 [label="Cross", color="orange"];
+    }
+    
+    // Example 3: Signal inversion
+    subgraph cluster_ex3 {
+        label="Example 3: Signal Inversion";
+        style=filled;
+        fillcolor="#F3E5F5";
+        fontsize=11;
+        fontname="Arial Bold";
+        
+        pwm_out [label="PWM_OUT", shape=box, style=filled, fillcolor="#FFE082"];
+        gpio4 [label="GPIO4", shape=circle, style=filled, fillcolor="#C8E6C9", width=0.8, height=0.8, fixedsize=true];
+        inv_symbol [label="!", shape=diamond, style=filled, fillcolor="#FFCDD2"];
+        
+        pwm_out -> inv_symbol [color="blue"];
+        inv_symbol -> gpio4 [label="Inverted", color="blue"];
+    }
+    
+    // Example 4: Multiple inputs
+    subgraph cluster_ex4 {
+        label="Example 4: Multiple Sources";
+        style=filled;
+        fillcolor="#E1F5FE";
+        fontsize=11;
+        fontname="Arial Bold";
+        
+        btn1 [label="BTN1", shape=box, style=filled, fillcolor="#B3E5FC"];
+        btn2 [label="BTN2", shape=box, style=filled, fillcolor="#B3E5FC"];
+        gpio5 [label="GPIO5", shape=circle, style=filled, fillcolor="#C8E6C9", width=0.8, height=0.8, fixedsize=true];
+        or_gate [label="OR", shape=diamond, style=filled, fillcolor="#FFCDD2"];
+        
+        btn1 -> or_gate [color="purple"];
+        btn2 -> or_gate [color="purple"];
+        or_gate -> gpio5 [label="Combined", color="purple"];
+    }
+    
+    // Invisible nodes for layout control
+    inv1 [style=invis];
+    inv2 [style=invis];
+    inv3 [style=invis];
+    inv4 [style=invis];
+    
+    // Connect invisible nodes to cluster content for positioning
+    inv1 -> uart1_tx [style=invis];
+    inv2 -> uart2_tx [style=invis];
+    inv3 -> pwm_out [style=invis];
+    inv4 -> btn1 [style=invis];
+    
+    // Layout control using invisible nodes
+    {rank=same; inv1; inv2}
+    {rank=same; inv3; inv4}
+}

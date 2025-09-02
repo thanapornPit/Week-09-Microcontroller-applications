@@ -1,0 +1,51 @@
+digraph LED_Schematic {
+    // Graph settings
+    rankdir=LR;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=9];
+    edge [fontname="Arial", fontsize=8];
+    
+    // GPIO Pin representation
+    gpio [label="GPIO2", shape=circle, style=filled, fillcolor="#4CAF50", fontcolor="white"];
+    
+    // Resistor using ASCII art style
+    r1 [label="┌─┐\n│ │ 330Ω\n└─┘", shape=plaintext, fontfamily="monospace"];
+    
+    // LED using symbols
+    led [label="LED\n ▲\n─┼─\n │", shape=plaintext, fontfamily="monospace", fontcolor="red"];
+    
+    // Ground symbol
+    ground [label="GND\n⏚", shape=plaintext, fontfamily="monospace"];
+    
+    // Invisible nodes for better layout
+    conn1 [shape=point, width=0.1, height=0.1];
+    conn2 [shape=point, width=0.1, height=0.1];
+    conn3 [shape=point, width=0.1, height=0.1];
+    
+    // Connections
+    gpio -> conn1 [arrowhead=none, penwidth=2];
+    conn1 -> r1 [arrowhead=none, penwidth=2];
+    r1 -> conn2 [arrowhead=none, penwidth=2];
+    conn2 -> led [arrowhead=none, penwidth=2];
+    led -> conn3 [arrowhead=none, penwidth=2];
+    conn3 -> ground [arrowhead=none, penwidth=2];
+    
+    // Current flow arrow
+    current [label="I = 10mA →", shape=plaintext, fontcolor="blue"];
+    {rank=same; current; r1}
+    
+    // Voltage drops
+    v_gpio [label="3.3V", shape=plaintext, fontcolor="green"];
+    v_led [label="2.0V", shape=plaintext, fontcolor="orange"];
+    v_gnd [label="0V", shape=plaintext, fontcolor="red"];
+    
+    {rank=same; v_gpio; gpio}
+    {rank=same; v_led; led}
+    {rank=same; v_gnd; ground}
+    
+    // Title
+    label="LED Circuit Schematic";
+    labelloc="t";
+    fontsize=12;
+    fontname="Arial Bold";
+}

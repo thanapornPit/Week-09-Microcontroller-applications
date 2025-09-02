@@ -1,0 +1,123 @@
+digraph ESP32_System_Overview {
+    // Graph settings
+    rankdir=TB;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9];
+    compound=true;
+    
+    // CPU Layer
+    subgraph cluster_cpu {
+        label="CPU Layer";
+        style=filled;
+        fillcolor="#E6F3FF";
+        
+        app [label="User Application\n(FreeRTOS Tasks)", shape=box, style=filled, fillcolor="#87CEEB"];
+        esp_idf [label="ESP-IDF APIs\nDriver Layer", shape=box, style=filled, fillcolor="#98FB98"];
+    }
+    
+    // Hardware Abstraction Layer
+    subgraph cluster_hal {
+        label="Hardware Layer";
+        style=filled;
+        fillcolor="#F0FFF0";
+        
+        // Core components
+        cpu0 [label="CPU 0\nPRO_CPU", shape=ellipse, style=filled, fillcolor="#FFE4B5"];
+        cpu1 [label="CPU 1\nAPP_CPU", shape=ellipse, style=filled, fillcolor="#FFE4B5"];
+        memory [label="Memory\nSRAM/Flash", shape=box, style=filled, fillcolor="#DDA0DD"];
+        
+        // Peripheral controllers
+        gpio_ctrl [label="GPIO\nController", shape=box, style=filled, fillcolor="#F0E68C"];
+        uart_ctrl [label="UART\nController", shape=box, style=filled, fillcolor="#F0E68C"];
+        i2c_ctrl [label="I2C\nController", shape=box, style=filled, fillcolor="#F0E68C"];
+        spi_ctrl [label="SPI\nController", shape=box, style=filled, fillcolor="#F0E68C"];
+        adc_ctrl [label="ADC\nController", shape=box, style=filled, fillcolor="#F0E68C"];
+        ledc_ctrl [label="LEDC\nController", shape=box, style=filled, fillcolor="#F0E68C"];
+        wifi_ctrl [label="WiFi\nController", shape=box, style=filled, fillcolor="#F0E68C"];
+        bt_ctrl [label="Bluetooth\nController", shape=box, style=filled, fillcolor="#F0E68C"];
+        
+        // GPIO Matrix and IO MUX
+        gpio_matrix [label="GPIO Matrix\n(Signal Router)", shape=box, style=filled, fillcolor="#FFB6C1"];
+        io_mux [label="IO MUX\n(Pin Driver)", shape=box, style=filled, fillcolor="#FFA07A"];
+    }
+    
+    // Physical GPIO Pins
+    subgraph cluster_pins {
+        label="Physical GPIO Pins";
+        style=filled;
+        fillcolor="#F5F5F5";
+        
+        gpio0 [label="GPIO 0", shape=circle, style=filled, fillcolor="#90EE90"];
+        gpio2 [label="GPIO 2", shape=circle, style=filled, fillcolor="#90EE90"];
+        gpio4 [label="GPIO 4", shape=circle, style=filled, fillcolor="#90EE90"];
+        gpio5 [label="GPIO 5", shape=circle, style=filled, fillcolor="#90EE90"];
+        gpio_dots [label="...", shape=plaintext];
+        gpio25 [label="GPIO 25", shape=circle, style=filled, fillcolor="#90EE90"];
+        gpio26 [label="GPIO 26", shape=circle, style=filled, fillcolor="#90EE90"];
+        gpio27 [label="GPIO 27", shape=circle, style=filled, fillcolor="#90EE90"];
+    }
+    
+    // External Devices
+    subgraph cluster_external {
+        label="External Devices";
+        style=filled;
+        fillcolor="#FFFACD";
+        
+        sensor [label="Sensors\nTemperature\nPressure", shape=box, style=filled, fillcolor="#87CEEB"];
+        actuator [label="Actuators\nLED\nMotor", shape=box, style=filled, fillcolor="#98FB98"];
+        display [label="Display\nOLED\nLCD", shape=box, style=filled, fillcolor="#DDA0DD"];
+        wireless [label="Wireless\nWiFi\nBluetooth", shape=cloud, style=filled, fillcolor="#F0E68C"];
+    }
+    
+    // Application to Driver connections
+    app -> esp_idf [label="API Calls", color="blue", penwidth=2];
+    esp_idf -> gpio_ctrl [label="GPIO", color="green"];
+    esp_idf -> uart_ctrl [label="UART", color="green"];
+    esp_idf -> i2c_ctrl [label="I2C", color="green"];
+    esp_idf -> spi_ctrl [label="SPI", color="green"];
+    esp_idf -> adc_ctrl [label="ADC", color="green"];
+    esp_idf -> ledc_ctrl [label="PWM", color="green"];
+    esp_idf -> wifi_ctrl [label="WiFi", color="green"];
+    esp_idf -> bt_ctrl [label="Bluetooth", color="green"];
+    
+    // CPU connections
+    {cpu0; cpu1} -> esp_idf [style=dashed, color="orange"];
+    {cpu0; cpu1} -> memory [style=dashed, color="orange"];
+    
+    // Controller to GPIO Matrix
+    gpio_ctrl -> gpio_matrix [color="purple"];
+    uart_ctrl -> gpio_matrix [color="purple"];
+    i2c_ctrl -> gpio_matrix [color="purple"];
+    spi_ctrl -> gpio_matrix [color="purple"];
+    adc_ctrl -> gpio_matrix [color="purple"];
+    ledc_ctrl -> gpio_matrix [color="purple"];
+    
+    // GPIO Matrix to IO MUX
+    gpio_matrix -> io_mux [label="Route Signals", color="red", penwidth=2];
+    
+    // IO MUX to GPIO Pins
+    io_mux -> {gpio0; gpio2; gpio4; gpio5; gpio25; gpio26; gpio27} [color="brown"];
+    
+    // GPIO Pins to External Devices
+    {gpio0; gpio2; gpio4; gpio5} -> sensor [label="Input", color="blue"];
+    {gpio25; gpio26; gpio27} -> actuator [label="Output", color="red"];
+    {gpio4; gpio5} -> display [label="I2C/SPI", color="purple"];
+    
+    // Wireless connections
+    wifi_ctrl -> wireless [color="green", style=bold];
+    bt_ctrl -> wireless [color="green", style=bold];
+    
+    // Position constraints
+    {rank=same; cpu0; cpu1; memory}
+    {rank=same; gpio_ctrl; uart_ctrl; i2c_ctrl; spi_ctrl}
+    {rank=same; adc_ctrl; ledc_ctrl; wifi_ctrl; bt_ctrl}
+    {rank=same; gpio0; gpio2; gpio4; gpio5; gpio_dots; gpio25; gpio26; gpio27}
+    {rank=same; sensor; actuator; display}
+    
+    // Title
+    label="ESP32 Complete System Architecture";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+}

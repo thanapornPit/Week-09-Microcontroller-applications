@@ -1,0 +1,61 @@
+```mermaid
+graph TD
+    subgraph CPU["🖥️ Dual-Core Processors"]
+        PRO["💻 PRO CPU<br/>Protocol<br/>Xtensa LX6 32-bit<br/>240 MHz"]
+        APP["💻 APP CPU<br/>Application<br/>Xtensa LX6 32-bit<br/>240 MHz"]
+    end
+
+    subgraph BUS["🚌 Bus System"]
+        MATRIX["🔀 Interconnect<br/>Bus Matrix<br/>Arbitrator"]
+        PBUS["📡 Peripheral<br/>Subsystem Bus"]
+    end
+
+    subgraph IO["🔌 I/O Management"]
+        IOMUX["🔀 IO MUX &<br/>GPIO Matrix<br/>Routing System"]
+        GPIO["📌 GPIO PINS<br/>40 pins available<br/>Multi-function I/O"]
+    end
+
+    subgraph PERIPH["⚙️ Peripheral Function Blocks"]
+        ADC["📊 ADC<br/>18 channels<br/>12-bit"]
+        DAC["📈 DAC<br/>2 channels<br/>8-bit"]
+        PWM["⚡ PWM<br/>16 channels<br/>LEDC"]
+        I2C["🔗 I2C<br/>2 interfaces<br/>SDA/SCL"]
+        SPI["🔄 SPI<br/>3 interfaces<br/>MOSI/MISO/CLK"]
+        UART["📞 UART<br/>3 interfaces<br/>TX/RX"]
+        TOUCH["👆 Touch<br/>10 channels<br/>Capacitive"]
+        I2S["🎵 I2S<br/>Audio<br/>Digital"]
+    end
+
+    MEM["💾 Memory Subsystem<br/>SRAM, Flash, RTC"]
+
+    %% Connections
+    PRO --> MATRIX
+    APP --> MATRIX
+    MATRIX --> PBUS
+    MATRIX --> MEM
+    PBUS --> IOMUX
+    IOMUX --> GPIO
+
+    %% GPIO to Peripherals
+    GPIO -.-> ADC
+    GPIO -.-> DAC
+    GPIO -.-> PWM
+    GPIO -.-> I2C
+    GPIO -.-> SPI
+    GPIO -.-> UART
+    GPIO -.-> TOUCH
+    GPIO -.-> I2S
+
+    %% Styling
+    classDef cpuStyle fill:#e1f5fe,stroke:#0277bd,stroke-width:3px
+    classDef busStyle fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
+    classDef ioStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef periphStyle fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef memStyle fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+
+    class PRO,APP cpuStyle
+    class MATRIX,PBUS busStyle
+    class IOMUX,GPIO ioStyle
+    class ADC,DAC,PWM,I2C,SPI,UART,TOUCH,I2S periphStyle
+    class MEM memStyle
+```

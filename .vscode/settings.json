@@ -1,0 +1,9 @@
+{
+    "plantuml.render": "Local",
+    "plantuml.jar": "C:\\Tools\\PlantUML\\plantuml.jar",
+    "plantuml.commandArgs": ["-charset", "UTF-8"],
+    "plantuml.exportFormat": "png",
+    "plantuml.exportSubFolder": false,
+    "plantuml.exportOutDir": ".",
+    "plantuml.previewAutoUpdate": true
+}

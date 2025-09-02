@@ -1,0 +1,45 @@
+digraph PWM_Data_Flow {
+    // Graph settings
+    rankdir=LR;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9];
+    
+    // PWM Components
+    cpu [label="CPU\nSet Duty Cycle", shape=box, style=filled, fillcolor="#87CEEB"];
+    timer [label="LEDC Timer\nClock Generator\n240MHz ÷ N", shape=box, style=filled, fillcolor="#98FB98"];
+    channel [label="LEDC Channel\nPWM Generator\nDuty Control", shape=box, style=filled, fillcolor="#F0E68C"];
+    gpio_matrix [label="GPIO Matrix\nSignal Router", shape=box, style=filled, fillcolor="#DDA0DD"];
+    io_mux [label="IO MUX\nPin Driver\nCurrent Control", shape=box, style=filled, fillcolor="#FFB6C1"];
+    gpio_pin [label="GPIO Pin\nPhysical Output", shape=circle, style=filled, fillcolor="#FFA07A"];
+    device [label="LED/Motor\nLoad Device", shape=box, style=filled, fillcolor="#90EE90"];
+    
+    // Data flow connections
+    cpu -> timer [label="1. Frequency", color="blue", penwidth=2];
+    timer -> channel [label="2. Clock", color="green", penwidth=2];
+    channel -> gpio_matrix [label="3. PWM Signal", color="orange", penwidth=2];
+    gpio_matrix -> io_mux [label="4. Route", color="purple", penwidth=2];
+    io_mux -> gpio_pin [label="5. Drive", color="red", penwidth=2];
+    gpio_pin -> device [label="6. Control", color="brown", penwidth=2];
+    
+    // Step annotations
+    step1 [label="[1] Configure Timer\nledc_timer_config()", shape=note, style=filled, fillcolor="#FFFACD"];
+    step2 [label="[2] Setup Channel\nledc_channel_config()", shape=note, style=filled, fillcolor="#FFFACD"];
+    step3 [label="[3] Update Duty\nledc_set_duty()", shape=note, style=filled, fillcolor="#FFFACD"];
+    
+    // Position annotations
+    {rank=same; step1; timer}
+    {rank=same; step2; channel}
+    {rank=same; step3; cpu}
+    
+    // Connect annotations
+    step1 -> timer [style=dashed, color=gray];
+    step2 -> channel [style=dashed, color=gray];
+    step3 -> cpu [style=dashed, color=gray];
+    
+    // Title
+    label="PWM (LEDC) Data Flow - Timer to Output";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+}

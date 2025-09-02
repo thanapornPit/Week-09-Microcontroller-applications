@@ -1,0 +1,85 @@
+digraph Physical_to_Digital {
+    // Graph settings
+    rankdir=LR;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9];
+    
+    // Define clusters (domains)
+    subgraph cluster_physical {
+        label="Physical Domain\n(Energy domains)";
+        style="dashed";
+        color="blue";
+        fontsize=12;
+        fontname="Arial Bold";
+        
+        // Energy domains
+        radiant [label="Radiant", shape=box, style=filled, fillcolor="#E0E0E0"];
+        mechanical [label="Mechanical", shape=box, style=filled, fillcolor="#E0E0E0"];
+        thermal [label="Thermal", shape=box, style=filled, fillcolor="#E0E0E0"];
+        electrical_energy [label="Electrical", shape=box, style=filled, fillcolor="#E0E0E0"];
+        magnetic [label="Magnetic", shape=box, style=filled, fillcolor="#E0E0E0"];
+        chemical [label="Chemical", shape=box, style=filled, fillcolor="#E0E0E0"];
+    }
+    
+    subgraph cluster_sensors {
+        label="Sensors";
+        style="dashed";
+        color="green";
+        fontsize=12;
+        fontname="Arial Bold";
+        
+        electrical_sensor [label="Electrical\nenergy", shape=ellipse, style=filled, fillcolor="#B3D9FF"];
+    }
+    
+    subgraph cluster_electrical {
+        label="Electrical System";
+        style="dashed";
+        color="orange";
+        fontsize=12;
+        fontname="Arial Bold";
+        
+        signal_conversion [label="Signal Conversion\n\nADC, DAC", shape=box, style=filled, fillcolor="#FFE082"];
+    }
+    
+    subgraph cluster_digital {
+        label="Digital Domain";
+        style="dashed";
+        color="purple";
+        fontsize=12;
+        fontname="Arial Bold";
+        
+        digital_processing [label="Digital\nProcessing", shape=box, style=filled, fillcolor="#E1BEE7"];
+        internet [label="Internet\nConnectivity", shape=box, style=filled, fillcolor="#C8E6C9"];
+    }
+    
+    // Connections from energy domains to electrical energy
+    radiant -> electrical_sensor [arrowhead=normal, penwidth=2];
+    mechanical -> electrical_sensor [arrowhead=normal, penwidth=2];
+    thermal -> electrical_sensor [arrowhead=normal, penwidth=2];
+    electrical_energy -> electrical_sensor [arrowhead=normal, penwidth=2];
+    magnetic -> electrical_sensor [arrowhead=normal, penwidth=2];
+    chemical -> electrical_sensor [arrowhead=normal, penwidth=2];
+    
+    // From sensors to signal conversion
+    electrical_sensor -> signal_conversion [arrowhead=normal, penwidth=3, color="blue"];
+    
+    // From signal conversion to digital domain
+    signal_conversion -> digital_processing [arrowhead=normal, penwidth=3, color="blue"];
+    
+    // From digital processing to internet
+    digital_processing -> internet [arrowhead=normal, penwidth=2, color="green"];
+    
+    // Title
+    label="Microcontroller: Bridge from Physical to Digital Domain";
+    labelloc="t";
+    fontsize=16;
+    fontname="Arial Bold";
+    
+    // Add notes
+    note1 [label="🔗 Microcontroller Role:\nBridge Physical ↔ Digital", shape=plaintext, fontcolor="red"];
+    note2 [label="🌐 Ultimate Goal:\nIoT Connectivity", shape=plaintext, fontcolor="green"];
+    
+    {rank=same; note1; electrical_sensor}
+    {rank=same; note2; internet}
+}

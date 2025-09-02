@@ -1,0 +1,44 @@
+digraph ADC_Data_Flow {
+    // Graph settings
+    rankdir=LR;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9];
+    
+    // Define nodes with styling
+    sensor [label="Sensor\n(Temperature/Light)", shape=box, style=filled, fillcolor="#E8F4FD"];
+    gpio_pin [label="GPIO Pin\n(34-39)", shape=box, style=filled, fillcolor="#FFF2CC"];
+    io_mux [label="IO MUX\nConfig", shape=box, style=filled, fillcolor="#D5E8D4"];
+    adc_unit [label="ADC Unit\n12-bit", shape=box, style=filled, fillcolor="#F8CECC"];
+    digital_filter [label="Digital Filter\nCalibration", shape=box, style=filled, fillcolor="#E1D5E7"];
+    cpu_dma [label="DMA/CPU\nProcessing", shape=box, style=filled, fillcolor="#DAE8FC"];
+    
+    // Define connections
+    sensor -> gpio_pin [label="Analog\nSignal"];
+    gpio_pin -> io_mux [label="Pin\nRouting"];
+    io_mux -> adc_unit [label="Analog\nInput"];
+    adc_unit -> digital_filter [label="Raw\n12-bit"];
+    digital_filter -> cpu_dma [label="Calibrated\nVoltage"];
+    
+    // Add step numbers
+    step1 [label="1", shape=circle, style=filled, fillcolor="#FFE6CC", pos="0,0!"];
+    step2 [label="2", shape=circle, style=filled, fillcolor="#FFE6CC", pos="1,0!"];
+    step3 [label="3", shape=circle, style=filled, fillcolor="#FFE6CC", pos="2,0!"];
+    step4 [label="4", shape=circle, style=filled, fillcolor="#FFE6CC", pos="3,0!"];
+    step5 [label="5", shape=circle, style=filled, fillcolor="#FFE6CC", pos="4,0!"];
+    step6 [label="6", shape=circle, style=filled, fillcolor="#FFE6CC", pos="5,0!"];
+    
+    // Position step numbers below each component
+    {rank=same; step1; sensor}
+    {rank=same; step2; gpio_pin}
+    {rank=same; step3; io_mux}
+    {rank=same; step4; adc_unit}
+    {rank=same; step5; digital_filter}
+    {rank=same; step6; cpu_dma}
+    
+    // Add title
+    label="ESP32 ADC Data Flow Architecture";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+}

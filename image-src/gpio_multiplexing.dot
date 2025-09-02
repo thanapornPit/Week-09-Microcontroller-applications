@@ -1,0 +1,123 @@
+digraph GPIO_Multiplexing {
+    // Graph settings
+    rankdir=LR;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9];
+    
+    // Peripheral sources (left side)
+    subgraph cluster_peripherals {
+        label="Peripheral Signals";
+        style=filled;
+        fillcolor="#E8F4FD";
+        fontsize=12;
+        fontname="Arial Bold";
+        
+        uart_tx [label="UART TX", shape=box, style=filled, fillcolor="#FFE082"];
+        spi_clk [label="SPI CLK", shape=box, style=filled, fillcolor="#FFE082"];
+        i2c_sda [label="I2C SDA", shape=box, style=filled, fillcolor="#FFE082"];
+        pwm_out [label="PWM OUT", shape=box, style=filled, fillcolor="#FFE082"];
+        adc_in [label="ADC IN", shape=box, style=filled, fillcolor="#FFE082"];
+    }
+    
+    // Stage 1: GPIO Matrix
+    subgraph cluster_matrix {
+        label="Stage 2: GPIO Matrix\n(Flexible Routing)";
+        style=filled;
+        fillcolor="#F8CECC";
+        fontsize=12;
+        fontname="Arial Bold";
+        
+        matrix [label=<
+            <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" BGCOLOR="white">
+                <TR><TD COLSPAN="4"><B>GPIO Matrix Router</B></TD></TR>
+                <TR><TD>Any Signal</TD><TD>→</TD><TD>Any Pin</TD><TD>Route</TD></TR>
+                <TR><TD>Input</TD><TD>←</TD><TD>Pin</TD><TD>Route</TD></TR>
+                <TR><TD>Inversion</TD><TD>!</TD><TD>Signal</TD><TD>Option</TD></TR>
+                <TR><TD>Multiple</TD><TD>×</TD><TD>Sources</TD><TD>Mux</TD></TR>
+            </TABLE>
+        >, shape=plaintext];
+    }
+    
+    // Stage 2: IO MUX
+    subgraph cluster_iomux {
+        label="Stage 1: IO MUX\n(Physical Configuration)";
+        style=filled;
+        fillcolor="#D5E8D4";
+        fontsize=12;
+        fontname="Arial Bold";
+        
+        iomux [label=<
+            <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" BGCOLOR="white">
+                <TR><TD COLSPAN="3"><B>IO MUX Controller</B></TD></TR>
+                <TR><TD>Function</TD><TD>GPIO/Alt</TD><TD>Select</TD></TR>
+                <TR><TD>Pull-up/down</TD><TD>Enable</TD><TD>Resistor</TD></TR>
+                <TR><TD>Drive Strength</TD><TD>5-40mA</TD><TD>Current</TD></TR>
+                <TR><TD>Sleep Mode</TD><TD>Behavior</TD><TD>Control</TD></TR>
+            </TABLE>
+        >, shape=plaintext];
+    }
+    
+    // GPIO Pins
+    subgraph cluster_pins {
+        label="Physical GPIO Pins";
+        style=filled;
+        fillcolor="#E1D5E7";
+        fontsize=12;
+        fontname="Arial Bold";
+        
+        gpio0 [label="GPIO 0", shape=circle, style=filled, fillcolor="#C8E6C9"];
+        gpio2 [label="GPIO 2", shape=circle, style=filled, fillcolor="#C8E6C9"];
+        gpio4 [label="GPIO 4", shape=circle, style=filled, fillcolor="#C8E6C9"];
+        gpio5 [label="GPIO 5", shape=circle, style=filled, fillcolor="#C8E6C9"];
+        gpio_etc [label="...", shape=plaintext];
+    }
+    
+    // External devices
+    external [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR><TD BGCOLOR="#FFCDD2"><B>External Devices</B></TD></TR>
+            <TR><TD>💡 LEDs</TD></TR>
+            <TR><TD>🔘 Buttons</TD></TR>
+            <TR><TD>📡 Sensors</TD></TR>
+            <TR><TD>🖥️ Displays</TD></TR>
+            <TR><TD>📱 Modules</TD></TR>
+        </TABLE>
+    >, shape=plaintext];
+    
+    // Connections
+    // Peripherals to GPIO Matrix
+    uart_tx -> matrix [label="Any peripheral\nto any pin", color="blue", penwidth=2];
+    spi_clk -> matrix [style=invis];
+    i2c_sda -> matrix [style=invis];
+    pwm_out -> matrix [style=invis];
+    adc_in -> matrix [style=invis];
+    
+    // GPIO Matrix to IO MUX
+    matrix -> iomux [label="Signal routing\n+ configuration", color="green", penwidth=2];
+    
+    // IO MUX to GPIO Pins
+    iomux -> gpio0 [label="Physical pin\nconfiguration", color="orange", penwidth=2];
+    iomux -> gpio2 [style=invis];
+    iomux -> gpio4 [style=invis];
+    iomux -> gpio5 [style=invis];
+    
+    // GPIO Pins to External
+    gpio0 -> external [style=invis];
+    gpio2 -> external [label="Electrical\ninterface", color="red", penwidth=2];
+    gpio4 -> external [style=invis];
+    gpio5 -> external [style=invis];
+    
+    // Flexibility annotations
+    flexibility1 [label="✨ Flexibility:\nAny signal → Any pin", shape=plaintext, fontcolor="blue"];
+    flexibility2 [label="🔧 Configuration:\nElectrical properties", shape=plaintext, fontcolor="green"];
+    
+    {rank=same; flexibility1; matrix}
+    {rank=same; flexibility2; iomux}
+    
+    // Title
+    label="ESP32 GPIO: 2-Stage Multiplexing System";
+    labelloc="t";
+    fontsize=16;
+    fontname="Arial Bold";
+}

@@ -1,0 +1,63 @@
+digraph UART_Data_Flow {
+    // Graph settings
+    bgcolor="white";
+    node [fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9];
+    compound=true;
+    
+    // TX Path (Top)
+    subgraph cluster_tx {
+        label="TX Path (Transmit)";
+        style=filled;
+        fillcolor="#E6F3FF";
+        
+        app_tx [label="Application\nprintf()/write()", shape=box, style=filled, fillcolor="#87CEEB"];
+        uart_tx [label="UART Controller\nTX FIFO\n(128 bytes)", shape=box, style=filled, fillcolor="#98FB98"];
+        gpio_tx [label="GPIO Matrix\n(TX Signal)", shape=box, style=filled, fillcolor="#DDA0DD"];
+        iomux_tx [label="IO MUX\nTX Pin", shape=box, style=filled, fillcolor="#FFB6C1"];
+        pin_tx [label="GPIO Pin\n(TX)", shape=circle, style=filled, fillcolor="#FFA07A"];
+    }
+    
+    // RX Path (Bottom)
+    subgraph cluster_rx {
+        label="RX Path (Receive)";
+        style=filled;
+        fillcolor="#F0FFF0";
+        
+        pin_rx [label="GPIO Pin\n(RX)", shape=circle, style=filled, fillcolor="#90EE90"];
+        iomux_rx [label="IO MUX\nRX Pin", shape=box, style=filled, fillcolor="#FFB6C1"];
+        gpio_rx [label="GPIO Matrix\n(RX Signal)", shape=box, style=filled, fillcolor="#DDA0DD"];
+        uart_rx [label="UART Controller\nRX FIFO\n(128 bytes)", shape=box, style=filled, fillcolor="#98FB98"];
+        app_rx [label="Application\nread()/scanf()", shape=box, style=filled, fillcolor="#87CEEB"];
+    }
+    
+    // External device
+    external [label="External Device\nSensor/Module", shape=box, style=filled, fillcolor="#F0E68C"];
+    
+    // TX Path connections
+    app_tx -> uart_tx [label="1. Data", color="blue", penwidth=2];
+    uart_tx -> gpio_tx [label="2. Serial", color="green", penwidth=2];
+    gpio_tx -> iomux_tx [label="3. Route", color="purple", penwidth=2];
+    iomux_tx -> pin_tx [label="4. Drive", color="red", penwidth=2];
+    pin_tx -> external [label="TX Line", color="orange", penwidth=2];
+    
+    // RX Path connections
+    external -> pin_rx [label="RX Line", color="orange", penwidth=2];
+    pin_rx -> iomux_rx [label="5. Receive", color="red", penwidth=2];
+    iomux_rx -> gpio_rx [label="6. Route", color="purple", penwidth=2];
+    gpio_rx -> uart_rx [label="7. Deserialize", color="green", penwidth=2];
+    uart_rx -> app_rx [label="8. Data", color="blue", penwidth=2];
+    
+    // Configuration notes
+    config [label="UART Configuration\n• Baud Rate (9600-3M)\n• Data Bits (5-8)\n• Stop Bits (1-2)\n• Parity (None/Even/Odd)", 
+            shape=note, style=filled, fillcolor="#FFFACD"];
+    
+    // Position configuration
+    {rank=same; pin_tx; external; pin_rx}
+    
+    // Title
+    label="UART Bidirectional Data Flow";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+}

@@ -1,0 +1,77 @@
+digraph I2C_Data_Flow {
+    // Graph settings
+    rankdir=TB;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9];
+    compound=true;
+    
+    // ESP32 I2C Master
+    subgraph cluster_esp32 {
+        label="ESP32 (I2C Master)";
+        style=filled;
+        fillcolor="#E6F3FF";
+        
+        app [label="Application\ni2c_cmd_link", shape=box, style=filled, fillcolor="#87CEEB"];
+        i2c_ctrl [label="I2C Controller\nClock/Data Control", shape=box, style=filled, fillcolor="#98FB98"];
+        gpio_matrix [label="GPIO Matrix\nSCL/SDA Router", shape=box, style=filled, fillcolor="#DDA0DD"];
+        iomux_scl [label="IO MUX\nSCL Pin", shape=box, style=filled, fillcolor="#FFB6C1"];
+        iomux_sda [label="IO MUX\nSDA Pin", shape=box, style=filled, fillcolor="#FFB6C1"];
+        pin_scl [label="GPIO 22\n(SCL)", shape=circle, style=filled, fillcolor="#FFA07A"];
+        pin_sda [label="GPIO 21\n(SDA)", shape=circle, style=filled, fillcolor="#FFA07A"];
+    }
+    
+    // I2C Bus
+    subgraph cluster_bus {
+        label="I2C Bus (Shared)";
+        style=filled;
+        fillcolor="#F5F5F5";
+        
+        scl_line [label="SCL Line\n(Clock)", shape=plaintext];
+        sda_line [label="SDA Line\n(Data)", shape=plaintext];
+        pullup [label="Pull-up Resistors\n4.7kΩ", shape=triangle, style=filled, fillcolor="#FFFF99"];
+    }
+    
+    // I2C Devices
+    device1 [label="Device 1\nAddr: 0x48\n(Temperature)", shape=box, style=filled, fillcolor="#90EE90"];
+    device2 [label="Device 2\nAddr: 0x76\n(Pressure)", shape=box, style=filled, fillcolor="#90EE90"];
+    device3 [label="Device 3\nAddr: 0x3C\n(OLED)", shape=box, style=filled, fillcolor="#90EE90"];
+    
+    // Internal ESP32 connections
+    app -> i2c_ctrl [label="1. Command", color="blue", penwidth=2];
+    i2c_ctrl -> gpio_matrix [label="2. Clock/Data", color="green", penwidth=2];
+    gpio_matrix -> iomux_scl [label="3a. SCL Route", color="purple"];
+    gpio_matrix -> iomux_sda [label="3b. SDA Route", color="purple"];
+    iomux_scl -> pin_scl [label="4a. Drive", color="red"];
+    iomux_sda -> pin_sda [label="4b. Drive", color="red"];
+    
+    // Bus connections
+    pin_scl -> scl_line [label="Clock", color="orange", style=bold];
+    pin_sda -> sda_line [label="Data", color="orange", style=bold];
+    
+    // Device connections
+    scl_line -> device1 [label="CLK", color="gray"];
+    scl_line -> device2 [label="CLK", color="gray"];
+    scl_line -> device3 [label="CLK", color="gray"];
+    sda_line -> device1 [label="DATA", color="blue"];
+    sda_line -> device2 [label="DATA", color="blue"];
+    sda_line -> device3 [label="DATA", color="blue"];
+    
+    // Pull-up connections
+    pullup -> scl_line [style=dashed, color="yellow"];
+    pullup -> sda_line [style=dashed, color="yellow"];
+    
+    // Communication sequence
+    sequence [label="I2C Communication Sequence:\n1. START condition\n2. Device address (7-bit)\n3. R/W bit\n4. ACK from slave\n5. Data byte(s)\n6. ACK after each byte\n7. STOP condition", 
+              shape=note, style=filled, fillcolor="#FFFACD"];
+    
+    // Position devices
+    {rank=same; device1; device2; device3}
+    {rank=same; scl_line; sda_line}
+    
+    // Title
+    label="I2C Multi-Device Communication";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+}

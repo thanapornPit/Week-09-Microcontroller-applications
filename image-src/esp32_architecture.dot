@@ -1,0 +1,74 @@
+digraph ESP32_Architecture {
+    // กำหนด attribute ทั่วไป
+    graph [rankdir=TB, bgcolor="white", fontname="Arial", fontsize=12];
+    node [fontname="Arial", fontsize=10, shape=box, style=filled];
+    edge [fontname="Arial", fontsize=9];
+
+    // กำหนด subgraph สำหรับ CPU cores
+    subgraph cluster_cpu {
+        label="Dual-Core Processors";
+        style=filled;
+        fillcolor="lightblue";
+        fontsize=14;
+        fontname="Arial Bold";
+        
+        pro_cpu [label="PRO CPU\n(Protocol)\nXtensa LX6 32-bit\n240 MHz", 
+                fillcolor="lightgreen", shape=box3d];
+        app_cpu [label="APP CPU\n(Application)\nXtensa LX6 32-bit\n240 MHz", 
+                fillcolor="lightgreen", shape=box3d];
+    }
+
+    // Bus และ Matrix
+    bus_matrix [label="Interconnect Bus Matrix\nArbitrator", 
+                fillcolor="orange", shape=box, width=3.0, height=0.5];
+    
+    peripheral_bus [label="Peripheral\nSubsystem\nBus", 
+                   fillcolor="yellow"];
+
+    // IO MUX และ GPIO Matrix
+    io_mux [label="IO MUX &\nGPIO Matrix\nRouting System", 
+            fillcolor="pink"];
+
+    // GPIO Pins
+    gpio_pins [label="GPIO PINS\n(40 pins available)\nMulti-function I/O", 
+               fillcolor="lightcyan", shape=box];
+
+    // Peripheral Blocks
+    subgraph cluster_peripherals {
+        label="Peripheral Function Blocks";
+        style=filled;
+        fillcolor="lightyellow";
+        fontsize=12;
+        
+        adc [label="ADC\n18 channels\n12-bit", fillcolor="lightcoral"];
+        dac [label="DAC\n2 channels\n8-bit", fillcolor="lightcoral"];
+        pwm [label="PWM\n16 channels\nLEDC", fillcolor="lightcoral"];
+        i2c [label="I2C\n2 interfaces\nSDA/SCL", fillcolor="lightcoral"];
+        spi [label="SPI\n3 interfaces\nMOSI/MISO/CLK", fillcolor="lightcoral"];
+        uart [label="UART\n3 interfaces\nTX/RX", fillcolor="lightcoral"];
+        touch [label="Touch\n10 channels\nCapacitive", fillcolor="lightcoral"];
+        i2s [label="I2S\nAudio\nDigital", fillcolor="lightcoral"];
+    }
+
+    // Memory subsystem
+    memory [label="Memory Subsystem\nSRAM, Flash, RTC", 
+            fillcolor="lightsteelblue"];
+
+    // เชื่อมต่อ
+    pro_cpu -> bus_matrix [label="AHB Bus"];
+    app_cpu -> bus_matrix [label="AHB Bus"];
+    bus_matrix -> peripheral_bus [label="Internal Bus"];
+    bus_matrix -> memory [label="Memory Bus"];
+    peripheral_bus -> io_mux [label="Register Access"];
+    io_mux -> gpio_pins [label="Pin Mux"];
+    
+    // เชื่อมต่อ GPIO กับ peripherals
+    gpio_pins -> adc [style=dashed, color="#141414"];
+    gpio_pins -> dac [style=dashed, color=red];
+    gpio_pins -> pwm [style=dashed, color=red];
+    gpio_pins -> i2c [style=dashed, color=red];
+    gpio_pins -> spi [style=dashed, color=red];
+    gpio_pins -> uart [style=dashed, color=red];
+    gpio_pins -> touch [style=dashed, color=red];
+    gpio_pins -> i2s [style=dashed, color=red];
+}

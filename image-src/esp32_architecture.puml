@@ -1,0 +1,66 @@
+@startuml ESP32_Architecture
+!theme plain
+skinparam backgroundColor White
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+
+package "ESP32 Dual-Core System" {
+    
+    package "Processing Units" as CPU {
+        component [PRO CPU\nProtocol\nXtensa LX6 32-bit\n240 MHz] as PRO #LightGreen
+        component [APP CPU\nApplication\nXtensa LX6 32-bit\n240 MHz] as APP #LightGreen
+    }
+    
+    rectangle [Interconnect\nBus Matrix\nArbitrator] as MATRIX #Orange
+    component [Peripheral\nSubsystem Bus] as PBUS #Yellow
+    component [Memory Subsystem\nSRAM, Flash, RTC] as MEM #LightSteelBlue
+    
+    package "I/O Management" {
+        component [IO MUX &\nGPIO Matrix\nRouting System] as IOMUX #Pink
+        rectangle [GPIO PINS\n40 pins available\nMulti-function I/O] as GPIO #LightCyan
+    }
+    
+    package "Peripheral Function Blocks" as PERIPH {
+        component [ADC\n18 channels\n12-bit] as ADC #LightCoral
+        component [DAC\n2 channels\n8-bit] as DAC #LightCoral
+        component [PWM\n16 channels\nLEDC] as PWM #LightCoral
+        component [I2C\n2 interfaces\nSDA/SCL] as I2C #LightCoral
+        component [SPI\n3 interfaces\nMOSI/MISO/CLK] as SPI #LightCoral
+        component [UART\n3 interfaces\nTX/RX] as UART #LightCoral
+        component [Touch\n10 channels\nCapacitive] as TOUCH #LightCoral
+        component [I2S\nAudio Digital] as I2S #LightCoral
+    }
+}
+
+' Connections
+PRO --> MATRIX : AHB Bus
+APP --> MATRIX : AHB Bus
+MATRIX --> PBUS : Internal Bus
+MATRIX --> MEM : Memory Bus
+PBUS --> IOMUX : Register Access
+IOMUX --> GPIO : Pin Mux
+
+' GPIO to Peripherals (dashed lines)
+GPIO ..> ADC : Configurable
+GPIO ..> DAC : Configurable
+GPIO ..> PWM : Configurable
+GPIO ..> I2C : Configurable
+GPIO ..> SPI : Configurable
+GPIO ..> UART : Configurable
+GPIO ..> TOUCH : Configurable
+GPIO ..> I2S : Configurable
+
+note right of GPIO
+  Each GPIO pin can be
+  configured for different
+  functions via Register
+  Configuration
+end note
+
+note bottom of MATRIX
+  Bus Arbitrator manages
+  concurrent access from
+  both CPU cores
+end note
+
+@enduml

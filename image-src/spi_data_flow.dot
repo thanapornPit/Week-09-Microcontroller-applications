@@ -1,0 +1,90 @@
+digraph SPI_Data_Flow {
+    // Graph settings
+    rankdir=LR;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9];
+    compound=true;
+    
+    // ESP32 SPI Master
+    subgraph cluster_master {
+        label="ESP32 (SPI Master)";
+        style=filled;
+        fillcolor="#E6F3FF";
+        
+        app [label="Application\nspi_device_transmit", shape=box, style=filled, fillcolor="#87CEEB"];
+        spi_ctrl [label="SPI Controller\nHSPI/VSPI", shape=box, style=filled, fillcolor="#98FB98"];
+        gpio_matrix [label="GPIO Matrix\nSignal Router", shape=box, style=filled, fillcolor="#DDA0DD"];
+        iomux [label="IO MUX\nPin Driver", shape=box, style=filled, fillcolor="#FFB6C1"];
+        
+        // SPI Pins
+        sclk_pin [label="GPIO 18\n(SCLK)", shape=circle, style=filled, fillcolor="#FFA07A"];
+        mosi_pin [label="GPIO 23\n(MOSI)", shape=circle, style=filled, fillcolor="#FFA07A"];
+        miso_pin [label="GPIO 19\n(MISO)", shape=circle, style=filled, fillcolor="#FFA07A"];
+        cs_pin [label="GPIO 5\n(CS)", shape=circle, style=filled, fillcolor="#FFA07A"];
+    }
+    
+    // SPI Bus
+    subgraph cluster_bus {
+        label="SPI Bus";
+        style=filled;
+        fillcolor="#F5F5F5";
+        
+        sclk_line [label="SCLK\n(Clock)", shape=plaintext];
+        mosi_line [label="MOSI\n(Master Out)", shape=plaintext];
+        miso_line [label="MISO\n(Master In)", shape=plaintext];
+        cs_line [label="CS\n(Chip Select)", shape=plaintext];
+    }
+    
+    // SPI Devices
+    device1 [label="SD Card\nStorage", shape=box, style=filled, fillcolor="#90EE90"];
+    device2 [label="Display\nTFT/OLED", shape=box, style=filled, fillcolor="#90EE90"];
+    device3 [label="Sensor\nAccelerometer", shape=box, style=filled, fillcolor="#90EE90"];
+    
+    // ESP32 internal flow
+    app -> spi_ctrl [label="1. Data", color="blue", penwidth=2];
+    spi_ctrl -> gpio_matrix [label="2. SPI Signals", color="green", penwidth=2];
+    gpio_matrix -> iomux [label="3. Route", color="purple", penwidth=2];
+    iomux -> sclk_pin [label="4a. Clock", color="red"];
+    iomux -> mosi_pin [label="4b. Data Out", color="red"];
+    iomux -> miso_pin [label="4c. Data In", color="red"];
+    iomux -> cs_pin [label="4d. Select", color="red"];
+    
+    // Pin to bus connections
+    sclk_pin -> sclk_line [color="orange", style=bold];
+    mosi_pin -> mosi_line [color="orange", style=bold];
+    miso_pin -> miso_line [color="orange", style=bold];
+    cs_pin -> cs_line [color="orange", style=bold];
+    
+    // Bus to devices (SCLK and MOSI - Master to Slave)
+    sclk_line -> device1 [label="CLK", color="gray"];
+    sclk_line -> device2 [label="CLK", color="gray"];
+    sclk_line -> device3 [label="CLK", color="gray"];
+    mosi_line -> device1 [label="DATA OUT", color="blue"];
+    mosi_line -> device2 [label="DATA OUT", color="blue"];
+    mosi_line -> device3 [label="DATA OUT", color="blue"];
+    
+    // MISO - Slave to Master (reverse direction)
+    device1 -> miso_line [label="DATA IN", color="green"];
+    device2 -> miso_line [label="DATA IN", color="green"];
+    device3 -> miso_line [label="DATA IN", color="green"];
+    
+    // Chip Select (individual)
+    cs_line -> device1 [label="CS1", color="red", style=dashed];
+    cs_line -> device2 [label="CS2", color="red", style=dashed];
+    cs_line -> device3 [label="CS3", color="red", style=dashed];
+    
+    // SPI characteristics
+    characteristics [label="SPI Characteristics:\n• Full-duplex communication\n• Master controls clock\n• Up to 80MHz speed\n• Multiple slaves (CS select)\n• 4-wire interface", 
+                    shape=note, style=filled, fillcolor="#FFFACD"];
+    
+    // Position devices
+    {rank=same; device1; device2; device3}
+    {rank=same; sclk_line; mosi_line; miso_line; cs_line}
+    
+    // Title
+    label="SPI Master-Slave Communication";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+}

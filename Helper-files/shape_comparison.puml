@@ -1,0 +1,42 @@
+@startuml shape_comparison
+!theme plain
+skinparam backgroundColor White
+
+title ESP32 Component Shape Comparison
+
+' Component (rounded rectangle)
+component [Component Style\nBus Matrix\n(rounded corners)] as COMP1 #LightBlue
+
+' Rectangle (sharp corners)  
+rectangle [Rectangle Style\nBus Matrix\n(sharp corners)] as RECT1 #Orange
+
+' Node (3D effect)
+node [Node Style\nBus Matrix\n(3D effect)] as NODE1 #LightGreen
+
+' Different GPIO representations
+component [GPIO - Component\n40 pins\n(rounded)] as GPIO_COMP #LightCyan
+rectangle [GPIO - Rectangle\n40 pins\n(sharp)] as GPIO_RECT #LightCyan  
+node [GPIO - Node\n40 pins\n(3D)] as GPIO_NODE #LightCyan
+
+' Arrange them
+COMP1 -down-> GPIO_COMP : Component\nStyle
+RECT1 -down-> GPIO_RECT : Rectangle\nStyle  
+NODE1 -down-> GPIO_NODE : Node\nStyle
+
+note top of COMP1
+  component = rounded rectangle
+  เหมาะสำหรับ software components
+end note
+
+note top of RECT1
+  rectangle = sharp corners
+  เหมาะสำหรับ hardware blocks
+  เช่น Bus Matrix, GPIO array
+end note
+
+note top of NODE1
+  node = 3D effect
+  เหมาะสำหรับ physical hardware
+end note
+
+@enduml

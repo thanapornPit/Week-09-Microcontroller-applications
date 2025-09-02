@@ -1,0 +1,67 @@
+digraph LED_3D {
+    // Graph settings
+    bgcolor="white";
+    node [fontname="Arial", fontsize=8];
+    edge [fontname="Arial", fontsize=7];
+    
+    // ESP32 Board representation
+    esp32 [label=<
+        <TABLE BORDER="2" CELLBORDER="0" CELLSPACING="2" BGCOLOR="#2E7D32">
+            <TR><TD COLSPAN="3" BGCOLOR="#4CAF50"><FONT COLOR="white"><B>ESP32</B></FONT></TD></TR>
+            <TR><TD BGCOLOR="#FFF">GND</TD><TD BGCOLOR="#FFF">GPIO2</TD><TD BGCOLOR="#FFF">3V3</TD></TR>
+            <TR><TD>●</TD><TD>●</TD><TD>●</TD></TR>
+        </TABLE>
+    >, shape=plaintext];
+    
+    // Breadboard section
+    breadboard [label=<
+        <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#F5F5F5">
+            <TR><TD>─</TD><TD>─</TD><TD>─</TD><TD>─</TD><TD>─</TD></TR>
+            <TR><TD>─</TD><TD BGCOLOR="#FFE082">R</TD><TD BGCOLOR="#FF8A80">+</TD><TD BGCOLOR="#FF8A80">-</TD><TD>─</TD></TR>
+            <TR><TD>─</TD><TD>─</TD><TD>─</TD><TD>─</TD><TD>─</TD></TR>
+        </TABLE>
+    >, shape=plaintext];
+    
+    // LED 3D representation
+    led_3d [label=<
+        <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+            <TR><TD>    ╭─╮</TD></TR>
+            <TR><TD>   ╱   ╲</TD></TR>
+            <TR><TD>  ╱ LED ╲</TD></TR>
+            <TR><TD> ╱  💡  ╲</TD></TR>
+            <TR><TD>╱       ╲</TD></TR>
+            <TR><TD>│   +   │</TD></TR>
+            <TR><TD>│   -   │</TD></TR>
+            <TR><TD>│       │</TD></TR>
+        </TABLE>
+    >, shape=plaintext];
+    
+    // Resistor 3D
+    resistor_3d [label=<
+        <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+            <TR><TD>┌─────┐</TD></TR>
+            <TR><TD>│ 330 │</TD></TR>
+            <TR><TD>│  Ω  │</TD></TR>
+            <TR><TD>└─────┘</TD></TR>
+        </TABLE>
+    >, shape=plaintext];
+    
+    // Wires
+    wire1 [label="", shape=plaintext, fontcolor="red"];
+    wire2 [label="", shape=plaintext, fontcolor="black"];
+    
+    // Connections with wire colors
+    esp32 -> resistor_3d [label="Red Wire", color="red", penwidth=3];
+    resistor_3d -> led_3d [label="Current", color="orange", penwidth=2];
+    led_3d -> esp32 [label="Black Wire", color="black", penwidth=3];
+    
+    // Layout
+    {rank=same; esp32; breadboard}
+    {rank=same; resistor_3d; led_3d}
+    
+    // Title
+    label="3D View: ESP32 + LED Circuit";
+    labelloc="t";
+    fontsize=14;
+    fontname="Arial Bold";
+}
