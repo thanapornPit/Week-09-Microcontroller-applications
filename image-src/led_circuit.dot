@@ -29,27 +29,27 @@ digraph LED_Circuit {
     // Resistor representation
     resistor [label=<
         <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
-            <TR><TD BGCOLOR="#FFFFCC">330Ω</TD></TR>
+            <TR><TD BGCOLOR="#FFFFCC">470Ω</TD></TR>
             <TR><TD BGCOLOR="#FFFF99">RES</TD></TR>
         </TABLE>
     >, shape=plaintext];
     
     // Connections
     gpio2 -> resistor [label="Current\nLimit", color="red", penwidth=2];
-    resistor -> led:anode [label="I = 10mA", color="red", penwidth=2];
+    resistor -> led:anode [label="I = 3.4mA", color="red", penwidth=2];
     led:cathode -> gnd [label="Return\nPath", color="blue", penwidth=2];
     
     // Voltage annotations
     v1 [label="3.3V", shape=plaintext, fontcolor="red"];
-    v2 [label="2.0V", shape=plaintext, fontcolor="orange"];
-    v3 [label="1.3V", shape=plaintext, fontcolor="green"];
+    v2 [label="1.6V", shape=plaintext, fontcolor="orange"];
+    v3 [label="1.7V", shape=plaintext, fontcolor="green"];
     v4 [label="0V", shape=plaintext, fontcolor="blue"];
     
-    // Position voltage labels
-    {rank=same; v1; gpio2}
-    {rank=same; v2; resistor}
-    {rank=same; v3; led}
-    {rank=same; v4; gnd}
+    // Position voltage labels correctly (top to bottom)
+    {rank=same; v1; gpio2}      // 3.3V at top
+    {rank=same; v2; resistor}   // 2.0V at resistor
+    {rank=same; v3; led}        // 1.3V at LED
+    {rank=same; v4; gnd}        // 0V at bottom
     
     // Title
     label="ESP32 GPIO + LED Circuit";
