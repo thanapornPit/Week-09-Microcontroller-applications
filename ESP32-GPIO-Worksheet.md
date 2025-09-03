@@ -15,7 +15,8 @@
 
 ### ⚡ Hardware Setup
 
-#### 📊 LED Circuit### 🔧 Complete Implementation Example
+#### 📊 LED Circuit
+### 🔧 Complete Implementation Example
 
 **สำหรับผู้ที่ต้องการดู code แบบสมบูรณ์ที่ใช้ FreeRTOS Task และ proper structure:**
 
