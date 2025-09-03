@@ -6,31 +6,31 @@
 ### 1. สร้าง project ใหม่
 ```bash
 # สร้าง project structure
-docker run --rm -v ${PWD}:/project -w /project espressif/idf:v5.1.2 idf.py create-project my_project
+docker run --rm -v %cd%:/project -w /project espressif/idf:v5.1.2 idf.py create-project my_project
 
 # หรือใน PowerShell (Windows)
-docker run --rm -v ${PWD}:/project -w /project espressif/idf:v5.1.2 idf.py create-project my_project
+docker run --rm -v %cd%:/project -w /project espressif/idf:v5.1.2 idf.py create-project my_project
 ```
 
 ### 2. Build project
 ```bash
 # Build ทั้ง project
-docker run --rm -v ${PWD}:/project -w /project espressif/idf:v5.1.2 idf.py build
+docker run --rm -v %cd%:/project -w /project espressif/idf:v5.1.2 idf.py build
 
 # Build และดู size
-docker run --rm -v ${PWD}:/project -w /project espressif/idf:v5.1.2 idf.py size
+docker run --rm -v %cd%:/project -w /project espressif/idf:v5.1.2 idf.py size
 ```
 
 ### 3. Clean project
 ```bash
 # ลบไฟล์ build
-docker run --rm -v ${PWD}:/project -w /project espressif/idf:v5.1.2 idf.py fullclean
+docker run --rm -v %cd%:/project -w /project espressif/idf:v5.1.2 idf.py fullclean
 ```
 
 ### 4. Configuration
 ```bash
 # เปิด menuconfig (ใน interactive mode)
-docker run --rm -it -v ${PWD}:/project -w /project espressif/idf:v5.1.2 idf.py menuconfig
+docker run --rm -it -v %cd%:/project -w /project espressif/idf:v5.1.2 idf.py menuconfig
 ```
 
 ## 🔧 ใช้กับ Docker Compose
