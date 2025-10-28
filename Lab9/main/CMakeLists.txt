@@ -1,2 +1,0 @@
-idf_component_register(SRCS "Helloworld.c"
-                    INCLUDE_DIRS ".")
